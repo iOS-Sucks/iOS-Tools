@@ -81,28 +81,7 @@ function parseXmlStrict(text) {
   return doc;
 }
 
-/* ---------- hero: typing + reveal ---------- */
-(function hero() {
-  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const typed = $("typed");
-  const out = $("typed-out");
-  const cmd = "./inspect-profile --summary MyDNS.mobileconfig";
-  const result = "✓ 2 payloads · com.apple.dnsSettings.managed · valid plist";
-  if (!typed || !out) return;
-  if (reduce) {
-    typed.textContent = cmd;
-    out.textContent = result;
-    return;
-  }
-  let i = 0;
-  const tick = () => {
-    typed.textContent = cmd.slice(0, ++i);
-    if (i < cmd.length) setTimeout(tick, 34);
-    else setTimeout(() => { out.textContent = result; }, 350);
-  };
-  setTimeout(tick, 400);
-})();
-
+/* ---------- scroll reveal ---------- */
 (function reveal() {
   const els = document.querySelectorAll(".reveal");
   if (!("IntersectionObserver" in window)) {
@@ -548,6 +527,323 @@ function isIp(s) {
       setCode("plist-out", formatXml(raw));
     } catch (e) {
       setErr("plist-err", e.message);
+    }
+  });
+})();
+
+/* ---------- 10 · Wi-Fi generator ---------- */
+(function wifiGen() {
+  if (!$("wifi-build")) return;
+  $("wifi-build").addEventListener("click", () => {
+    setErr("wifi-err", "");
+    try {
+      const ssid = $("wifi-ssid").value.trim();
+      const sec = $("wifi-sec").value;
+      const pass = $("wifi-pass").value;
+      if (!ssid) throw new Error("network name (SSID) is required.");
+      if (ssid.length > 32) throw new Error("SSID is longer than 32 characters.");
+      if (sec !== "None" && !pass) throw new Error("this security type needs a password — or pick Open.");
+      const uuid = newUuid();
+      const idBase = `com.ios-tools.wifi.${uuid.slice(0, 8).toLowerCase()}`;
+      const lines = [
+        "    <dict>",
+        "      <key>AutoJoin</key>",
+        `      <${$("wifi-autojoin").checked ? "true" : "false"}/>`,
+        "      <key>EncryptionType</key>",
+        `      <string>${sec === "WPA2" ? "WPA" : sec}</string>`,
+        "      <key>HIDDEN_NETWORK</key>",
+        `      <${$("wifi-hidden").checked ? "true" : "false"}/>`,
+      ];
+      if (sec !== "None") {
+        lines.push("      <key>Password</key>", `      <string>${escapeXml(pass)}</string>`);
+      }
+      lines.push(
+        "      <key>PayloadDisplayName</key>",
+        "      <string>Wi-Fi</string>",
+        "      <key>PayloadIdentifier</key>",
+        `      <string>${idBase}</string>`,
+        "      <key>PayloadType</key>",
+        "      <string>com.apple.wifi.managed</string>",
+        "      <key>PayloadUUID</key>",
+        `      <string>${uuid}</string>`,
+        "      <key>PayloadVersion</key>",
+        "      <integer>1</integer>",
+        "      <key>ProxyType</key>",
+        "      <string>None</string>",
+        "      <key>SSID_STR</key>",
+        `      <string>${escapeXml(ssid)}</string>`,
+        "    </dict>"
+      );
+      const out = mobileconfigShell(ssid, `com.ios-tools.${uuid.slice(0, 8).toLowerCase()}`, lines.join("\n"));
+      setCode("wifi-out", out);
+      download(slugFilename(ssid + "-wifi", "mobileconfig"), out);
+    } catch (e) {
+      setErr("wifi-err", e.message);
+    }
+  });
+})();
+
+/* ---------- 11 · passcode policy generator ---------- */
+(function passcodeGen() {
+  if (!$("pw-build")) return;
+  const intInRange = (id, min, max, label, required) => {
+    const raw = $(id).value.trim();
+    if (!raw) {
+      if (required) throw new Error(`${label} is required.`);
+      return null;
+    }
+    if (!/^\d+$/.test(raw)) throw new Error(`${label} must be a whole number.`);
+    const n = Number(raw);
+    if (n < min || n > max) throw new Error(`${label} must be ${min}–${max}.`);
+    return n;
+  };
+  $("pw-build").addEventListener("click", () => {
+    setErr("pw-err", "");
+    try {
+      const minLen = intInRange("pw-minlen", 0, 16, "minimum length", true);
+      const complex = intInRange("pw-complex", 0, 4, "complex chars", false) ?? 0;
+      const maxAge = intInRange("pw-maxage", 0, 730, "max age", false);
+      const history = intInRange("pw-history", 0, 50, "history", false);
+      const maxFail = intInRange("pw-maxfail", 2, 11, "max failed attempts", false);
+      const uuid = newUuid();
+      const idBase = `com.ios-tools.passcode.${uuid.slice(0, 8).toLowerCase()}`;
+      const kv = (k, v) => `      <key>${k}</key>\n      ${v}`;
+      const parts = [
+        kv("PayloadDisplayName", "<string>Passcode Policy</string>"),
+        kv("PayloadIdentifier", `<string>${idBase}</string>`),
+        kv("PayloadType", "<string>com.apple.mobiledevice.passwordpolicy</string>"),
+        kv("PayloadUUID", `<string>${uuid}</string>`),
+        kv("PayloadVersion", "<integer>1</integer>"),
+        kv("allowSimple", "<false/>"),
+        kv("forcePIN", "<true/>"),
+        kv("minLength", `<integer>${minLen}</integer>`),
+        kv("minComplexChars", `<integer>${complex}</integer>`),
+        kv("requireAlphanumeric", `<${$("pw-alphanum").checked ? "true" : "false"}/>`),
+      ];
+      if (maxAge !== null) parts.push(kv("maxPINAgeInDays", `<integer>${maxAge}</integer>`));
+      if (history !== null) parts.push(kv("PINHistory", `<integer>${history}</integer>`));
+      if (maxFail !== null) parts.push(kv("maxFailedAttempts", `<integer>${maxFail}</integer>`));
+      const out = mobileconfigShell("Passcode Policy", `com.ios-tools.${uuid.slice(0, 8).toLowerCase()}`, `    <dict>\n${parts.join("\n")}\n    </dict>`);
+      setCode("pw-out", out);
+      download("passcode-policy.mobileconfig", out);
+    } catch (e) {
+      setErr("pw-err", e.message);
+    }
+  });
+})();
+
+/* ---------- 12 · bundle ID validator ---------- */
+(function bundleId() {
+  if (!$("bundle-check")) return;
+  const SEG = /^[A-Za-z][A-Za-z0-9-]*$/;
+  $("bundle-check").addEventListener("click", () => {
+    const v = $("bundle-in").value.trim();
+    const out = $("bundle-out");
+    if (v.length > 155) return void (out.textContent = "✗ over 155 characters — too long for a bundle ID.");
+    const segs = v.split(".");
+    if (segs.length < 2) return void (out.textContent = "✗ needs at least two segments, e.g. com.example.app.");
+    const bad = segs.find((s) => !SEG.test(s));
+    if (bad) return void (out.textContent = `✗ segment "${bad}" is invalid — start with a letter, then letters/digits/hyphens.`);
+    if (v !== v.toLowerCase()) out.textContent = "✓ valid shape — but Apple recommends all-lowercase.";
+    else out.textContent = "✓ valid bundle ID.";
+  });
+})();
+
+/* ---------- 13 · App Store link builder ---------- */
+(function storeLink() {
+  if (!$("store-go")) return;
+  $("store-go").addEventListener("click", () => {
+    setErr("store-err", "");
+    const list = $("store-out");
+    list.textContent = "";
+    const id = $("store-id").value.trim();
+    if (!/^\d{5,12}$/.test(id)) {
+      setErr("store-err", "expected the numeric App Store ID (5–12 digits).");
+      return;
+    }
+    const links = [
+      [`app link — apps.apple.com/app/id${id}`, `https://apps.apple.com/app/id${id}`],
+      [`direct short link — apps.apple.com/i/id${id}`, `https://apps.apple.com/i/id${id}`],
+    ];
+    for (const [label, href] of links) {
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.href = href;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.textContent = `${label} ↗`;
+      li.appendChild(a);
+      list.appendChild(li);
+    }
+  });
+})();
+
+/* ---------- 14 · URL codec ---------- */
+(function urlCodec() {
+  if (!$("url-enc")) return;
+  $("url-enc").addEventListener("click", () => {
+    setErr("url-err", "");
+    setCode("url-out", encodeURIComponent($("url-in").value));
+  });
+  $("url-dec").addEventListener("click", () => {
+    setErr("url-err", "");
+    try {
+      setCode("url-out", decodeURIComponent($("url-in").value));
+    } catch {
+      setErr("url-err", "malformed percent-encoding — e.g. a lone % or bad hex digits.");
+    }
+  });
+})();
+
+/* ---------- 15 · JWT decoder ---------- */
+function b64urlToUtf8(seg) {
+  const b64 = seg.replace(/-/g, "+").replace(/_/g, "/") + "=".repeat((4 - (seg.length % 4)) % 4);
+  if (!/^[A-Za-z0-9+/]*={0,2}$/.test(b64)) throw new Error("bad base64url characters.");
+  const bin = atob(b64);
+  return new TextDecoder("utf-8", { fatal: true }).decode(Uint8Array.from(bin, (c) => c.charCodeAt(0)));
+}
+
+(function jwtTool() {
+  if (!$("jwt-dec")) return;
+  $("jwt-dec").addEventListener("click", () => {
+    setErr("jwt-err", "");
+    try {
+      const raw = $("jwt-in").value.trim();
+      const parts = raw.split(".");
+      if (parts.length !== 3 || parts.some((p) => !p)) throw new Error("expected three base64url segments (header.payload.signature).");
+      const header = JSON.parse(b64urlToUtf8(parts[0]));
+      const payload = JSON.parse(b64urlToUtf8(parts[1]));
+      const stamp = (s) => {
+        if (typeof s !== "number") return s;
+        const d = new Date(s * 1000);
+        return Number.isNaN(d.getTime()) ? s : `${s} (${d.toISOString()})`;
+      };
+      const view = {
+        header,
+        payload,
+        derived: {
+          algorithm: header.alg ?? "—",
+          expires: payload.exp !== undefined ? stamp(payload.exp) : "no exp claim",
+          issued_at: payload.iat !== undefined ? stamp(payload.iat) : "no iat claim",
+          expired: typeof payload.exp === "number" ? payload.exp * 1000 < Date.now() : "unknown",
+        },
+        note: "signature NOT verified",
+      };
+      setCode("jwt-out", JSON.stringify(view, null, 2));
+    } catch (e) {
+      setErr("jwt-err", e instanceof SyntaxError ? "payload is not valid JSON unicode: " + e.message : e.message);
+    }
+  });
+})();
+
+/* ---------- 16 · hasher ---------- */
+(function hasher() {
+  if (!$("hash-go")) return;
+  $("hash-go").addEventListener("click", async () => {
+    setErr("hash-err", "");
+    try {
+      if (!crypto.subtle) throw new Error("crypto.subtle is unavailable — serve over https/localhost or open via file.");
+      const data = new TextEncoder().encode($("hash-in").value);
+      const digest = await crypto.subtle.digest($("hash-algo").value, data);
+      setCode("hash-out", [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join(""));
+    } catch (e) {
+      setErr("hash-err", e.message);
+    }
+  });
+})();
+
+/* ---------- 17 · color converter ---------- */
+function rgbToHsl(r, g, b) {
+  r /= 255; g /= 255; b /= 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  const l = (max + min) / 2;
+  if (max === min) return [0, 0, Math.round(l * 100)];
+  const d = max - min;
+  const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+  let h = max === r ? (g - b) / d + (g < b ? 6 : 0) : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+  return [Math.round(h * 60), Math.round(s * 100), Math.round(l * 100)];
+}
+
+(function colorTool() {
+  if (!$("color-convert")) return;
+  $("color-convert").addEventListener("click", () => {
+    setErr("color-err", "");
+    try {
+      const raw = $("color-hex").value.trim().toLowerCase();
+      let r, g, b;
+      const hex = raw.startsWith("#") ? raw.slice(1) : raw;
+      const m = raw.match(/^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/);
+      if (/^[0-9a-f]{6}$/.test(hex)) {
+        r = parseInt(hex.slice(0, 2), 16); g = parseInt(hex.slice(2, 4), 16); b = parseInt(hex.slice(4, 6), 16);
+      } else if (/^[0-9a-f]{3}$/.test(hex)) {
+        r = parseInt(hex[0] + hex[0], 16); g = parseInt(hex[1] + hex[1], 16); b = parseInt(hex[2] + hex[2], 16);
+      } else if (m) {
+        [r, g, b] = [Number(m[1]), Number(m[2]), Number(m[3])];
+        if ([r, g, b].some((n) => n > 255)) throw new Error("rgb channels must be 0–255.");
+      } else {
+        throw new Error("enter #rrggbb, #rgb, or rgb(r,g,b).");
+      }
+      const [h, s, l] = rgbToHsl(r, g, b);
+      const hx = `#${[r, g, b].map((n) => n.toString(16).padStart(2, "0")).join("")}`;
+      setCode("color-out", `HEX  ${hx}\nRGB  rgb(${r}, ${g}, ${b})\nHSL  hsl(${h}, ${s}%, ${l}%)`);
+      $("color-swatch").style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+    } catch (e) {
+      setErr("color-err", e.message);
+    }
+  });
+})();
+
+/* ---------- 18 · plist → JSON ---------- */
+function plistNodeToJson(el) {
+  switch (el.tagName) {
+    case "dict": {
+      const kids = [...el.children];
+      const obj = {};
+      for (let i = 0; i < kids.length; i += 2) {
+        if (kids[i].tagName !== "key" || !kids[i + 1]) throw new Error("malformed <dict> — keys and values must pair up.");
+        obj[kids[i].textContent] = plistNodeToJson(kids[i + 1]);
+      }
+      return obj;
+    }
+    case "array":
+      return [...el.children].map(plistNodeToJson);
+    case "string":
+      return el.textContent ?? "";
+    case "integer":
+      return Number(el.textContent);
+    case "real":
+      return Number(el.textContent);
+    case "true":
+      return true;
+    case "false":
+      return false;
+    case "date": {
+      const d = new Date(el.textContent ?? "");
+      if (Number.isNaN(d.getTime())) throw new Error("invalid <date> value.");
+      return d.toISOString();
+    }
+    case "data":
+      return (el.textContent ?? "").replace(/\s+/g, "");
+    default:
+      throw new Error(`unsupported plist node <${el.tagName}>.`);
+  }
+}
+
+(function plistToJsonTool() {
+  if (!$("p2j-go")) return;
+  $("p2j-go").addEventListener("click", () => {
+    setErr("p2j-err", "");
+    try {
+      const raw = $("p2j-in").value.trim();
+      if (!raw) throw new Error("paste plist XML first.");
+      const doc = parseXmlStrict(raw);
+      const root = doc.querySelector("plist");
+      if (!root) throw new Error("no <plist> root found.");
+      const val = [...root.children].find((c) => c.tagName === "dict" || c.tagName === "array");
+      if (!val) throw new Error("plist root must be a <dict> or <array>.");
+      setCode("p2j-out", JSON.stringify(plistNodeToJson(val), null, 2));
+    } catch (e) {
+      setErr("p2j-err", e.message);
     }
   });
 })();

@@ -18,6 +18,7 @@
       <span class="brand-tag">v1.0</span>
     </a>
     <nav aria-label="Sections">
+      <a href="#unblocked">unblocked</a>
       <a href="#profiles">profiles</a>
       <a href="#device">device</a>
       <a href="#dev">dev</a>
@@ -28,20 +29,14 @@
   <main id="top">
     <!-- HERO -->
     <section class="hero">
-      <p class="kicker"><span class="dot" aria-hidden="true"></span> 100% client-side — files never leave your device</p>
       <h1>iOS utilities,<br />nothing else.</h1>
       <p class="lede">Inspect <code>.mobileconfig</code> files, generate install-ready profiles, and convert the identifiers Apple loves — in a fast, square, keyboard-friendly page.</p>
-      <div class="terminal" role="img" aria-label="Terminal showing a profile being inspected">
-        <div class="term-bar" aria-hidden="true"><span></span><span></span><span></span></div>
-        <pre class="term-body"><code><span class="p">$</span> <span id="typed"></span><span class="caret" aria-hidden="true">▊</span>
-<span id="typed-out" class="dim"></span></code></pre>
-      </div>
       <div class="hero-actions">
         <a class="btn primary" href="#profiles">Open profile tools</a>
         <a class="btn" href="#tools">Browse all tools</a>
       </div>
       <dl class="stats">
-        <div><dt>tools</dt><dd>09</dd></div>
+        <div><dt>tools</dt><dd>18</dd></div>
         <div><dt>network calls</dt><dd>00</dd></div>
         <div><dt>tracking</dt><dd>00</dd></div>
         <div><dt>build step</dt><dd>00</dd></div>
@@ -88,12 +83,80 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6zM14 3v5h5"/></svg>
           <strong>plist pretty-printer</strong><span>raw plist XML → indented source</span><em>dev / 09</em>
         </a>
+        <a class="card reveal" href="#wifi-gen">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9a13 13 0 0118 0M6.5 12.5a8 8 0 0111 0M10 16a3 3 0 014 0M12 19h.01"/></svg>
+          <strong>Wi-Fi profile generator</strong><span>SSID + security → install-ready .mobileconfig</span><em>profiles / 10</em>
+        </a>
+        <a class="card reveal" href="#pw-gen">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
+          <strong>passcode policy generator</strong><span>length, complexity, history → .mobileconfig</span><em>profiles / 11</em>
+        </a>
+        <a class="card reveal" href="#bundle">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7l8-4 8 4-8 4zM4 7v10l8 4 8-4V7M12 11v9"/></svg>
+          <strong>bundle ID validator</strong><span>reverse-DNS checks for app identifiers</span><em>device / 12</em>
+        </a>
+        <a class="card reveal" href="#store">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16l-1.5 12h-13zM8 5a4 4 0 018 0"/></svg>
+          <strong>App Store link builder</strong><span>numeric app ID → shareable store link</span><em>device / 13</em>
+        </a>
+        <a class="card reveal" href="#urlcodec">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a5 5 0 007 0l3-3a5 5 0 00-7-7l-1.5 1.5M14 10a5 5 0 00-7 0l-3 3a5 5 0 007 7l1.5-1.5"/></svg>
+          <strong>URL codec</strong><span>percent-encode / decode query strings</span><em>dev / 14</em>
+        </a>
+        <a class="card reveal" href="#jwt">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="9" width="16" height="11"/><path d="M8 9V6h8v3M12 13v4M10 15h4"/></svg>
+          <strong>JWT decoder</strong><span>header + payload + expiry, signature unchecked</span><em>dev / 15</em>
+        </a>
+        <a class="card reveal" href="#hash">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3L7 21M17 3l-2 18M4 8h17M3 16h17"/></svg>
+          <strong>hasher</strong><span>SHA-256 / 384 / 512 via WebCrypto</span><em>dev / 16</em>
+        </a>
+        <a class="card reveal" href="#color">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16"/><path d="M4 14h16M10 4v16"/></svg>
+          <strong>color converter</strong><span>HEX ⇄ RGB ⇄ HSL with preview</span><em>dev / 17</em>
+        </a>
+        <a class="card reveal" href="#p2j">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v16H7zM10 8h4M10 12h4M10 16h2"/></svg>
+          <strong>plist → JSON</strong><span>Apple plist → portable JSON object</span><em>dev / 18</em>
+        </a>
       </div>
+    </section>
+
+    <!-- UNBLOCKED -->
+    <section id="unblocked" class="section">
+      <h2><span class="h-num">01</span> unblocked <span class="h-sub">games + managed devices</span></h2>
+
+      <article id="games" class="panel reveal">
+        <header><h3>games you can host yourself</h3><p>Most "unblocked games" mirrors are just open-source HTML5 games on static hosting — host your own copy and skip the ads and trackers.</p></header>
+        <ol class="steps">
+          <li><strong>Fork</strong> one of the repos below (free GitHub account).</li>
+          <li>Repo → <strong>Settings → Pages</strong> → Deploy from branch → default branch, <code>/ (root)</code>.</li>
+          <li>Open <code>https://&lt;you&gt;.github.io/&lt;repo&gt;</code> — that copy is yours.</li>
+        </ol>
+        <ul class="links" aria-label="Open-source games to self-host">
+          <li><a href="https://github.com/gabrielecirulli/2048" target="_blank" rel="noopener">2048 — sliding puzzle (MIT) ↗</a></li>
+          <li><a href="https://github.com/wayou/t-rex-runner" target="_blank" rel="noopener">t-rex runner — offline dino game (BSD-3) ↗</a></li>
+          <li><a href="https://github.com/Hextris/hextris" target="_blank" rel="noopener">hextris — fast hexagon puzzler (check repo license) ↗</a></li>
+        </ul>
+        <p class="dim small">Respect each repo's license. A school network can still block <code>github.io</code> — that's the network owner's call, not something to work around.</p>
+      </article>
+
+      <article id="managed" class="panel reveal">
+        <header><h3>school-managed device (Jamf &amp; co.)</h3><p>Straight answers for a supervised iPad you don't administer.</p></header>
+        <p><strong>See what's installed.</strong> Settings → General → VPN &amp; Device Management lists every profile. A supervised device says so at the top of Settings. Looking is read-only — always safe.</p>
+        <p><strong>What actually works:</strong></p>
+        <ol class="steps">
+          <li><strong>Ask school IT</strong> to allow what you need — name the app/site and the class it's for. Legitimate requests usually get approved.</li>
+          <li><strong>Use a personal device</strong> for anything school policy blocks. Their device, their rules.</li>
+          <li><strong>Go offline:</strong> this whole page runs without a network once loaded — save it (Share → Add to Home Screen, or Ctrl/Cmd+S on desktop) and it keeps working.</li>
+        </ol>
+        <p class="dim small">Deliberately no MDM-removal or filter-evasion steps here: on a school-owned device that's a policy violation and typically ends with a wiped device or suspended account. Only your IT admin can legitimately remove management.</p>
+      </article>
     </section>
 
     <!-- PROFILES -->
     <section id="profiles" class="section">
-      <h2><span class="h-num">01</span> profiles <span class="h-sub">.mobileconfig</span></h2>
+      <h2><span class="h-num">02</span> profiles <span class="h-sub">.mobileconfig</span></h2>
 
       <article id="mc-view" class="panel reveal">
         <header><h3>mobileconfig viewer</h3><p>Drop a <code>.mobileconfig</code> / <code>.plist</code> file or paste the XML. Parsed locally with <code>DOMParser</code> — nothing is uploaded.</p></header>
@@ -168,11 +231,88 @@
         <label for="clip-out">generated profile</label>
         <pre class="out"><code id="clip-out">—</code></pre>
       </article>
+
+      <article id="wifi-gen" class="panel reveal">
+        <header><h3>Wi-Fi profile generator</h3><p>Join a network automatically after installing. Password is stored in cleartext inside the profile — only share it with people who should know it.</p></header>
+        <div class="formgrid">
+          <div>
+            <label for="wifi-ssid">network name (SSID)</label>
+            <input id="wifi-ssid" type="text" maxlength="32" autocomplete="off" spellcheck="false" placeholder="CoffeeShop" />
+          </div>
+          <div>
+            <label for="wifi-sec">security</label>
+            <select id="wifi-sec">
+              <option value="WPA2">WPA2 / WPA3 Personal</option>
+              <option value="WPA">WPA Personal</option>
+              <option value="WEP">WEP (legacy)</option>
+              <option value="None">Open (no password)</option>
+            </select>
+          </div>
+        </div>
+        <label for="wifi-pass">password</label>
+        <input id="wifi-pass" type="text" autocomplete="off" spellcheck="false" placeholder="required unless open network" />
+        <div class="formgrid">
+          <div class="checkrow">
+            <input id="wifi-hidden" type="checkbox" />
+            <label for="wifi-hidden">hidden network</label>
+          </div>
+          <div class="checkrow">
+            <input id="wifi-autojoin" type="checkbox" checked />
+            <label for="wifi-autojoin">auto-join</label>
+          </div>
+        </div>
+        <div class="row">
+          <button class="btn primary" id="wifi-build" type="button">Generate .mobileconfig</button>
+        </div>
+        <p id="wifi-err" class="err" role="alert" aria-live="assertive"></p>
+        <label for="wifi-out">generated profile</label>
+        <pre class="out"><code id="wifi-out">—</code></pre>
+      </article>
+
+      <article id="pw-gen" class="panel reveal">
+        <header><h3>passcode policy generator</h3><p>Enforce a device passcode policy (<code>com.apple.mobiledevice.passwordpolicy</code>). Empty optional fields are left at iOS defaults.</p></header>
+        <div class="formgrid">
+          <div>
+            <label for="pw-minlen">minimum length (0–16)</label>
+            <input id="pw-minlen" type="text" inputmode="numeric" autocomplete="off" value="6" />
+          </div>
+          <div>
+            <label for="pw-complex">minimum complex chars (0–4)</label>
+            <input id="pw-complex" type="text" inputmode="numeric" autocomplete="off" placeholder="0" />
+          </div>
+        </div>
+        <div class="formgrid">
+          <div>
+            <label for="pw-maxage">max age in days (optional)</label>
+            <input id="pw-maxage" type="text" inputmode="numeric" autocomplete="off" placeholder="—" />
+          </div>
+          <div>
+            <label for="pw-history">remember history (0–50, optional)</label>
+            <input id="pw-history" type="text" inputmode="numeric" autocomplete="off" placeholder="—" />
+          </div>
+        </div>
+        <div class="formgrid">
+          <div>
+            <label for="pw-maxfail">max failed attempts (optional)</label>
+            <input id="pw-maxfail" type="text" inputmode="numeric" autocomplete="off" placeholder="—" />
+          </div>
+          <div class="checkrow">
+            <input id="pw-alphanum" type="checkbox" />
+            <label for="pw-alphanum">require alphanumeric</label>
+          </div>
+        </div>
+        <div class="row">
+          <button class="btn primary" id="pw-build" type="button">Generate .mobileconfig</button>
+        </div>
+        <p id="pw-err" class="err" role="alert" aria-live="assertive"></p>
+        <label for="pw-out">generated profile</label>
+        <pre class="out"><code id="pw-out">—</code></pre>
+      </article>
     </section>
 
     <!-- DEVICE -->
     <section id="device" class="section">
-      <h2><span class="h-num">02</span> device <span class="h-sub">identifiers + firmware</span></h2>
+      <h2><span class="h-num">03</span> device <span class="h-sub">identifiers + firmware</span></h2>
 
       <article id="udid" class="panel reveal">
         <header><h3>UDID / ECID helpers</h3><p>Classic 40-char hex UDIDs, 24/25-char newer IDs, and ECID hex ⇄ decimal via <code>BigInt</code>.</p></header>
@@ -209,11 +349,32 @@
         <p id="ipsw-err" class="err" role="alert" aria-live="assertive"></p>
         <ul id="ipsw-out" class="links" aria-live="polite"></ul>
       </article>
+
+      <article id="bundle" class="panel reveal">
+        <header><h3>bundle ID validator</h3><p>Checks reverse-DNS style (<code>com.example.app</code>): each segment starts with a letter, letters/digits/hyphens only, two or more segments. Lowercase recommended by Apple.</p></header>
+        <label for="bundle-in">bundle identifier</label>
+        <input id="bundle-in" type="text" spellcheck="false" autocomplete="off" placeholder="com.example.myapp" />
+        <div class="row">
+          <button class="btn primary" id="bundle-check" type="button">Validate</button>
+        </div>
+        <p id="bundle-out" class="result" aria-live="polite">—</p>
+      </article>
+
+      <article id="store" class="panel reveal">
+        <header><h3>App Store link builder</h3><p>Turns the numeric App Store ID (found in App Store Connect or the <code>id123456789</code> part of a store URL) into a shareable link.</p></header>
+        <label for="store-id">numeric app ID</label>
+        <input id="store-id" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="123456789" />
+        <div class="row">
+          <button class="btn primary" id="store-go" type="button">Build link</button>
+        </div>
+        <p id="store-err" class="err" role="alert" aria-live="assertive"></p>
+        <ul id="store-out" class="links" aria-live="polite"></ul>
+      </article>
     </section>
 
     <!-- DEV -->
     <section id="dev" class="section">
-      <h2><span class="h-num">03</span> dev <span class="h-sub">text + time</span></h2>
+      <h2><span class="h-num">04</span> dev <span class="h-sub">text + time</span></h2>
 
       <article id="b64" class="panel reveal">
         <header><h3>base64</h3><p>UTF-8 safe. Decodes strictly — invalid input is reported, not silently mangled.</p></header>
@@ -278,6 +439,78 @@
         <p id="plist-err" class="err" role="alert" aria-live="assertive"></p>
         <label for="plist-out">output</label>
         <pre class="out"><code id="plist-out">—</code></pre>
+      </article>
+
+      <article id="p2j" class="panel reveal">
+        <header><h3>plist → JSON</h3><p>Converts <code>&lt;dict&gt;</code>/<code>&lt;array&gt;</code> plists to JSON. Dates become ISO strings, <code>&lt;data&gt;</code> becomes base64.</p></header>
+        <label for="p2j-in">input</label>
+        <textarea id="p2j-in" rows="6" spellcheck="false" placeholder="&lt;plist …&gt;…"></textarea>
+        <div class="row">
+          <button class="btn primary" id="p2j-go" type="button">Convert</button>
+        </div>
+        <p id="p2j-err" class="err" role="alert" aria-live="assertive"></p>
+        <label for="p2j-out">output</label>
+        <pre class="out"><code id="p2j-out">—</code></pre>
+      </article>
+
+      <article id="urlcodec" class="panel reveal">
+        <header><h3>URL codec</h3><p>Percent-encodes with <code>encodeURIComponent</code>; decodes strictly and reports malformed sequences.</p></header>
+        <label for="url-in">input</label>
+        <textarea id="url-in" rows="3" spellcheck="false" placeholder="hello world & more"></textarea>
+        <div class="row">
+          <button class="btn primary" id="url-enc" type="button">Encode →</button>
+          <button class="btn" id="url-dec" type="button">← Decode</button>
+        </div>
+        <p id="url-err" class="err" role="alert" aria-live="assertive"></p>
+        <label for="url-out">output</label>
+        <pre class="out"><code id="url-out">—</code></pre>
+      </article>
+
+      <article id="jwt" class="panel reveal">
+        <header><h3>JWT decoder</h3><p>Shows header and payload, converts <code>exp</code>/<code>iat</code> to dates. The signature is <strong>not</strong> verified — never trust a token just because it decodes.</p></header>
+        <label for="jwt-in">token</label>
+        <textarea id="jwt-in" rows="4" spellcheck="false" placeholder="eyJhbGciOi…"></textarea>
+        <div class="row">
+          <button class="btn primary" id="jwt-dec" type="button">Decode</button>
+        </div>
+        <p id="jwt-err" class="err" role="alert" aria-live="assertive"></p>
+        <label for="jwt-out">output</label>
+        <pre class="out"><code id="jwt-out">—</code></pre>
+      </article>
+
+      <article id="hash" class="panel reveal">
+        <header><h3>hasher</h3><p>SHA-2 digests via <code>crypto.subtle</code> — needs a secure context (https, localhost, or file). Lowercase hex output.</p></header>
+        <label for="hash-in">input</label>
+        <textarea id="hash-in" rows="3" spellcheck="false" placeholder="hello"></textarea>
+        <div class="formgrid">
+          <div>
+            <label for="hash-algo">algorithm</label>
+            <select id="hash-algo">
+              <option value="SHA-256">SHA-256</option>
+              <option value="SHA-384">SHA-384</option>
+              <option value="SHA-512">SHA-512</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <button class="btn primary" id="hash-go" type="button">Hash</button>
+        </div>
+        <p id="hash-err" class="err" role="alert" aria-live="assertive"></p>
+        <label for="hash-out">output</label>
+        <pre class="out"><code id="hash-out">—</code></pre>
+      </article>
+
+      <article id="color" class="panel reveal">
+        <header><h3>color converter</h3><p>Accepts <code>#bfff00</code>, <code>bfff00</code>, or <code>rgb(191,255,0)</code> and shows all three forms.</p></header>
+        <label for="color-hex">color</label>
+        <input id="color-hex" type="text" spellcheck="false" autocomplete="off" value="#bfff00" />
+        <div class="row">
+          <button class="btn primary" id="color-convert" type="button">Convert</button>
+        </div>
+        <p id="color-err" class="err" role="alert" aria-live="assertive"></p>
+        <label for="color-out">output</label>
+        <pre class="out"><code id="color-out">—</code></pre>
+        <div id="color-swatch" class="swatch" role="img" aria-label="Color preview"></div>
       </article>
     </section>
   </main>
