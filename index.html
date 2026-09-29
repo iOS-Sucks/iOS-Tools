@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iOS-Tools — minimal utilities for iOS</title>
+  <meta name="description" content="Minimal black-and-white utilities for iOS: .mobileconfig viewer, profile generators, device helpers and dev tools. 100% client-side." />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%230a0a0a'/%3E%3Crect x='3' y='3' width='10' height='10' fill='none' stroke='%23bfff00' stroke-width='2'/%3E%3C/svg%3E" />
+</head>
+<body>
+  <a class="skip" href="#tools">Skip to tools</a>
+
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="iOS-Tools home">
+      <span class="brand-box" aria-hidden="true"></span>
+      <span>iOS-Tools</span>
+      <span class="brand-tag">v1.0</span>
+    </a>
+    <nav aria-label="Sections">
+      <a href="#profiles">profiles</a>
+      <a href="#device">device</a>
+      <a href="#dev">dev</a>
+      <a href="https://github.com/iOS-Sucks/iOS-Tools" target="_blank" rel="noopener">github ↗</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <!-- HERO -->
+    <section class="hero">
+      <p class="kicker"><span class="dot" aria-hidden="true"></span> 100% client-side — files never leave your device</p>
+      <h1>iOS utilities,<br />nothing else.</h1>
+      <p class="lede">Inspect <code>.mobileconfig</code> files, generate install-ready profiles, and convert the identifiers Apple loves — in a fast, square, keyboard-friendly page.</p>
+      <div class="terminal" role="img" aria-label="Terminal showing a profile being inspected">
+        <div class="term-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+        <pre class="term-body"><code><span class="p">$</span> <span id="typed"></span><span class="caret" aria-hidden="true">▊</span>
+<span id="typed-out" class="dim"></span></code></pre>
+      </div>
+      <div class="hero-actions">
+        <a class="btn primary" href="#profiles">Open profile tools</a>
+        <a class="btn" href="#tools">Browse all tools</a>
+      </div>
+      <dl class="stats">
+        <div><dt>tools</dt><dd>09</dd></div>
+        <div><dt>network calls</dt><dd>00</dd></div>
+        <div><dt>tracking</dt><dd>00</dd></div>
+        <div><dt>build step</dt><dd>00</dd></div>
+      </dl>
+    </section>
+
+    <!-- TOOL INDEX -->
+    <section id="tools" class="index">
+      <h2><span class="h-num">00</span> index</h2>
+      <div class="grid cards">
+        <a class="card reveal" href="#mc-view">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+          <strong>mobileconfig viewer</strong><span>paste or drop a profile → readable summary + source</span><em>profiles / 01</em>
+        </a>
+        <a class="card reveal" href="#dns-gen">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="10"/><path d="M7 11h.01M11 11h.01M15 11h.01M7 15h10"/></svg>
+          <strong>DNS profile generator</strong><span>custom or preset DNS → signed-ready .mobileconfig</span><em>profiles / 02</em>
+        </a>
+        <a class="card reveal" href="#clip-gen">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16"/><path d="M9 12l2 2 4-4"/></svg>
+          <strong>web clip generator</strong><span>URL → home-screen icon profile</span><em>profiles / 03</em>
+        </a>
+        <a class="card reveal" href="#udid">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2" width="10" height="20"/><path d="M11 18h2"/></svg>
+          <strong>UDID / ECID helpers</strong><span>validate UDIDs, hex ⇄ dec ECID conversion</span><em>device / 04</em>
+        </a>
+        <a class="card reveal" href="#ipsw">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>
+          <strong>IPSW / signing lookup</strong><span>identifier in → correct ipsw.me links out</span><em>device / 05</em>
+        </a>
+        <a class="card reveal" href="#b64">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+          <strong>base64</strong><span>utf-8 safe encode / decode</span><em>dev / 06</em>
+        </a>
+        <a class="card reveal" href="#jsonfmt">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4H4v4M16 4h4v4M8 20H4v-4M16 20h4v-4M9 9h6v6H9z"/></svg>
+          <strong>JSON formatter</strong><span>validate, pretty-print, minify</span><em>dev / 07</em>
+        </a>
+        <a class="card reveal" href="#uuid">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16"/><path d="M9 9h6v6H9z"/></svg>
+          <strong>UUID / time</strong><span>v4 generator + unix ⇄ ISO converter</span><em>dev / 08</em>
+        </a>
+        <a class="card reveal" href="#plist">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6zM14 3v5h5"/></svg>
+          <strong>plist pretty-printer</strong><span>raw plist XML → indented source</span><em>dev / 09</em>
+        </a>
+      </div>
+    </section>
+
+    <!-- PROFILES -->
+    <section id="profiles" class="section">
+      <h2><span class="h-num">01</span> profiles <span class="h-sub">.mobileconfig</span></h2>
+
+      <article id="mc-view" class="panel reveal">
+        <header><h3>mobileconfig viewer</h3><p>Drop a <code>.mobileconfig</code> / <code>.plist</code> file or paste the XML. Parsed locally with <code>DOMParser</code> — nothing is uploaded.</p></header>
+        <div id="mc-drop" class="drop" tabindex="0" role="button" aria-label="Drop a mobileconfig file or press Enter to browse">
+          <p><strong>drop file here</strong> or <label class="linklike" for="mc-file">browse<input id="mc-file" type="file" accept=".mobileconfig,.plist,.xml,text/xml" hidden /></label></p>
+          <p class="dim small">also works from paste below</p>
+        </div>
+        <label for="mc-in">profile source (xml)</label>
+        <textarea id="mc-in" rows="8" spellcheck="false" placeholder="&lt;?xml version=&quot;1.0&quot; …?&gt;&#10;&lt;plist …&gt;…"></textarea>
+        <div class="row">
+          <button class="btn primary" id="mc-parse" type="button">Parse profile</button>
+          <button class="btn" id="mc-clear" type="button">Clear</button>
+          <button class="btn" id="mc-download" type="button" disabled>Download .mobileconfig</button>
+        </div>
+        <p id="mc-err" class="err" role="alert" aria-live="assertive"></p>
+        <div id="mc-summary" class="summary" aria-live="polite"></div>
+        <label for="mc-out">formatted source</label>
+        <pre class="out"><code id="mc-out">—</code></pre>
+      </article>
+
+      <article id="dns-gen" class="panel reveal">
+        <header><h3>DNS profile generator</h3><p>Build an install-ready <code>.mobileconfig</code> with managed DNS settings. Presets fill known-good servers; edit freely.</p></header>
+        <div class="formgrid">
+          <div>
+            <label for="dns-name">profile display name</label>
+            <input id="dns-name" type="text" value="Custom DNS" maxlength="80" autocomplete="off" />
+          </div>
+          <div>
+            <label for="dns-preset">preset</label>
+            <select id="dns-preset">
+              <option value="custom">custom…</option>
+              <option value="1.1.1.1,1.0.0.1">Cloudflare — 1.1.1.1</option>
+              <option value="9.9.9.9,149.112.112.112">Quad9 — 9.9.9.9</option>
+              <option value="94.140.14.14,94.140.15.15">AdGuard — 94.140.14.14</option>
+              <option value="8.8.8.8,8.8.4.4">Google — 8.8.8.8</option>
+            </select>
+          </div>
+        </div>
+        <label for="dns-servers">DNS servers (comma or space separated IPv4/IPv6)</label>
+        <input id="dns-servers" type="text" value="1.1.1.1, 1.0.0.1" autocomplete="off" spellcheck="false" />
+        <label for="dns-doh">encrypted DNS URL — DoH/DoT (optional)</label>
+        <input id="dns-doh" type="url" placeholder="https://cloudflare-dns.com/dns-query" autocomplete="off" spellcheck="false" />
+        <p class="dim small">Empty DoH field → plain DNS payload. With a URL → encrypted payload (<code>DNSProtocol: HTTPS</code>).</p>
+        <div class="row">
+          <button class="btn primary" id="dns-build" type="button">Generate .mobileconfig</button>
+        </div>
+        <p id="dns-err" class="err" role="alert" aria-live="assertive"></p>
+        <label for="dns-out">generated profile</label>
+        <pre class="out"><code id="dns-out">—</code></pre>
+      </article>
+
+      <article id="clip-gen" class="panel reveal">
+        <header><h3>web clip generator</h3><p>Home-screen icon that opens a URL full-screen. Install via Settings after downloading.</p></header>
+        <div class="formgrid">
+          <div>
+            <label for="clip-label">icon label</label>
+            <input id="clip-label" type="text" value="iOS-Tools" maxlength="40" autocomplete="off" />
+          </div>
+          <div>
+            <label for="clip-url">URL</label>
+            <input id="clip-url" type="url" value="https://github.com/iOS-Sucks/iOS-Tools" autocomplete="off" spellcheck="false" />
+          </div>
+        </div>
+        <div class="checkrow">
+          <input id="clip-removable" type="checkbox" checked />
+          <label for="clip-removable">removable (long-press to delete)</label>
+        </div>
+        <div class="row">
+          <button class="btn primary" id="clip-build" type="button">Generate .mobileconfig</button>
+        </div>
+        <p id="clip-err" class="err" role="alert" aria-live="assertive"></p>
+        <label for="clip-out">generated profile</label>
+        <pre class="out"><code id="clip-out">—</code></pre>
+      </article>
+    </section>
+
+    <!-- DEVICE -->
+    <section id="device" class="section">
+      <h2><span class="h-num">02</span> device <span class="h-sub">identifiers + firmware</span></h2>
+
+      <article id="udid" class="panel reveal">
+        <header><h3>UDID / ECID helpers</h3><p>Classic 40-char hex UDIDs, 24/25-char newer IDs, and ECID hex ⇄ decimal via <code>BigInt</code>.</p></header>
+        <label for="udid-in">UDID</label>
+        <input id="udid-in" type="text" spellcheck="false" autocomplete="off" placeholder="00008110-001234567890ABCD" />
+        <div class="row">
+          <button class="btn primary" id="udid-check" type="button">Validate</button>
+        </div>
+        <p id="udid-out" class="result" aria-live="polite">—</p>
+        <div class="formgrid">
+          <div>
+            <label for="ecid-hex">ECID (hex, e.g. 0x1A2B3C…)</label>
+            <input id="ecid-hex" type="text" spellcheck="false" autocomplete="off" placeholder="0x…" />
+          </div>
+          <div>
+            <label for="ecid-dec">ECID (decimal)</label>
+            <input id="ecid-dec" type="text" spellcheck="false" autocomplete="off" inputmode="numeric" placeholder="…" />
+          </div>
+        </div>
+        <div class="row">
+          <button class="btn" id="ecid-to-dec" type="button">hex → dec</button>
+          <button class="btn" id="ecid-to-hex" type="button">dec → hex</button>
+        </div>
+        <p id="ecid-err" class="err" role="alert" aria-live="assertive"></p>
+      </article>
+
+      <article id="ipsw" class="panel reveal">
+        <header><h3>IPSW / signing lookup</h3><p>No API keys, no tracking — builds the correct <code>ipsw.me</code> deep links for any device identifier.</p></header>
+        <label for="ipsw-id">device identifier (e.g. iPhone16,2 · iPad14,3 · Mac15,9)</label>
+        <input id="ipsw-id" type="text" spellcheck="false" autocomplete="off" placeholder="iPhone16,2" />
+        <div class="row">
+          <button class="btn primary" id="ipsw-go" type="button">Build links</button>
+        </div>
+        <p id="ipsw-err" class="err" role="alert" aria-live="assertive"></p>
+        <ul id="ipsw-out" class="links" aria-live="polite"></ul>
+      </article>
+    </section>
+
+    <!-- DEV -->
+    <section id="dev" class="section">
+      <h2><span class="h-num">03</span> dev <span class="h-sub">text + time</span></h2>
+
+      <article id="b64" class="panel reveal">
+        <header><h3>base64</h3><p>UTF-8 safe. Decodes strictly — invalid input is reported, not silently mangled.</p></header>
+        <label for="b64-in">input</label>
+        <textarea id="b64-in" rows="4" spellcheck="false" placeholder="hello world"></textarea>
+        <div class="row">
+          <button class="btn primary" id="b64-enc" type="button">Encode →</button>
+          <button class="btn" id="b64-dec" type="button">← Decode</button>
+        </div>
+        <p id="b64-err" class="err" role="alert" aria-live="assertive"></p>
+        <label for="b64-out">output</label>
+        <pre class="out"><code id="b64-out">—</code></pre>
+      </article>
+
+      <article id="jsonfmt" class="panel reveal">
+        <header><h3>JSON formatter</h3><p>Validates with <code>JSON.parse</code>, pretty-prints with 2 spaces.</p></header>
+        <label for="json-in">input</label>
+        <textarea id="json-in" rows="6" spellcheck="false" placeholder='{"hello":"world"}'></textarea>
+        <div class="row">
+          <button class="btn primary" id="json-pretty" type="button">Format</button>
+          <button class="btn" id="json-min" type="button">Minify</button>
+        </div>
+        <p id="json-err" class="err" role="alert" aria-live="assertive"></p>
+        <label for="json-out">output</label>
+        <pre class="out"><code id="json-out">—</code></pre>
+      </article>
+
+      <article id="uuid" class="panel reveal">
+        <header><h3>UUID / time</h3><p><code>crypto.randomUUID()</code> for identifiers, one converter for unix ⇄ ISO-8601.</p></header>
+        <div class="row">
+          <button class="btn primary" id="uuid-gen" type="button">Generate UUID v4</button>
+          <button class="btn" id="uuid-lower" type="button">Lowercase</button>
+          <button class="btn" id="uuid-upper" type="button">Uppercase</button>
+        </div>
+        <pre class="out"><code id="uuid-out">—</code></pre>
+        <div class="formgrid">
+          <div>
+            <label for="ts-in">unix timestamp (seconds)</label>
+            <input id="ts-in" type="text" inputmode="numeric" autocomplete="off" placeholder="1700000000" />
+          </div>
+          <div>
+            <label for="iso-in">ISO-8601 date</label>
+            <input id="iso-in" type="text" autocomplete="off" spellcheck="false" placeholder="2026-09-29T00:00:00Z" />
+          </div>
+        </div>
+        <div class="row">
+          <button class="btn" id="ts-now" type="button">Now</button>
+          <button class="btn" id="ts-to-iso" type="button">unix → ISO</button>
+          <button class="btn" id="iso-to-ts" type="button">ISO → unix</button>
+        </div>
+        <p id="ts-err" class="err" role="alert" aria-live="assertive"></p>
+        <p id="ts-out" class="result" aria-live="polite">—</p>
+      </article>
+
+      <article id="plist" class="panel reveal">
+        <header><h3>plist pretty-printer</h3><p>Indents raw plist / mobileconfig XML so diffs are readable. Same formatter the viewer uses.</p></header>
+        <label for="plist-in">input</label>
+        <textarea id="plist-in" rows="6" spellcheck="false" placeholder="&lt;plist …&gt;…"></textarea>
+        <div class="row">
+          <button class="btn primary" id="plist-fmt" type="button">Format XML</button>
+        </div>
+        <p id="plist-err" class="err" role="alert" aria-live="assertive"></p>
+        <label for="plist-out">output</label>
+        <pre class="out"><code id="plist-out">—</code></pre>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    <p><strong>iOS-Tools</strong> — static page, no backend, no cookies. Your files stay in your browser.</p>
+    <p class="dim">Install profiles only from sources you trust. Misconfigured DNS / VPN payloads can route your traffic anywhere.</p>
+    <p><a href="https://github.com/iOS-Sucks/iOS-Tools" target="_blank" rel="noopener">github.com/iOS-Sucks/iOS-Tools ↗</a></p>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
