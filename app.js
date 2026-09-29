@@ -95,6 +95,53 @@ function parseXmlStrict(text) {
   els.forEach((e) => io.observe(e));
 })();
 
+/* ---------- ambient tiles: a few grid cells glow lime at random ---------- */
+(function tiles() {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const SIZE = 96;
+  const MAX_CELLS = 400;
+  const MAX_LIT = 6;
+  const layer = document.createElement("div");
+  layer.className = "tiles";
+  layer.setAttribute("aria-hidden", "true");
+  document.body.prepend(layer);
+
+  let cells = [];
+  const build = () => {
+    layer.textContent = "";
+    cells = [];
+    const cols = Math.max(1, Math.ceil(innerWidth / SIZE));
+    const rows = Math.max(1, Math.ceil(innerHeight / SIZE));
+    const step = Math.max(1, Math.ceil((cols * rows) / MAX_CELLS));
+    layer.style.gridTemplateColumns = `repeat(${Math.ceil(cols / step)}, ${SIZE}px)`;
+    layer.style.gridAutoRows = `${SIZE}px`;
+    for (let y = 0; y < rows; y += step) {
+      for (let x = 0; x < cols; x += step) {
+        const c = document.createElement("div");
+        c.className = "tile";
+        layer.appendChild(c);
+        cells.push(c);
+      }
+    }
+  };
+  build();
+  let resizeTimer = null;
+  addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(build, 250);
+  });
+
+  setInterval(() => {
+    if (document.hidden) return;
+    const lit = layer.querySelectorAll(".lit").length;
+    if (lit >= MAX_LIT || !cells.length) return;
+    const c = cells[Math.floor(Math.random() * cells.length)];
+    if (c.classList.contains("lit")) return;
+    c.classList.add("lit");
+    setTimeout(() => c.classList.remove("lit"), 1200 + Math.random() * 1200);
+  }, 700);
+})();
+
 /* ---------- plist dict helpers ---------- */
 function childElements(el) {
   return [...el.children];

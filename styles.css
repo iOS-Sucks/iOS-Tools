@@ -174,7 +174,11 @@ input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--lime); }
 
 footer { border-top: 1px solid var(--line); padding: 28px 20px 60px; max-width: 960px; margin: 0 auto; font-size: 13px; }
 
-/* reveal animation */
+/* animated accent tiles (JS lights a few at random; static grid stays as backdrop) */
+.tiles { position: fixed; inset: 0; z-index: 0; pointer-events: none; display: grid; }
+.tile { opacity: 0; transition: opacity 1.4s ease; }
+.tile.lit { background: var(--lime); opacity: 0.08; }
+body > header, body > main, body > footer { position: relative; z-index: 1; }
 .reveal { opacity: 0; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
 .reveal.in { opacity: 1; transform: none; }
 
