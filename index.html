@@ -19,6 +19,8 @@
     </a>
     <nav aria-label="Sections">
       <a href="unblocked.html">unblocked</a>
+      <a href="pack.html">pack</a>
+      <a href="#vault">vault</a>
       <a href="#profiles">profiles</a>
       <a href="#device">device</a>
       <a href="#dev">dev</a>
@@ -50,6 +52,10 @@
         <a class="card reveal" href="unblocked.html">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h9l4 4v12H6zM9 12l2 2 4-4"/></svg>
           <strong>unblocked</strong><span>self-hostable games + managed-device guides</span><em>guides / →</em>
+        </a>
+        <a class="card reveal" href="#vault">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10"/><path d="M8 10V7a4 4 0 018 0v3M12 14v3"/></svg>
+          <strong>vault</strong><span>local storage for passwords and secrets</span><em>storage / →</em>
         </a>
         <a class="card reveal" href="#mc-view">
           <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
@@ -536,6 +542,7 @@
         </div>
         <div class="row">
           <button class="btn primary" id="pass-build" type="button">Generate</button>
+          <button class="btn" id="pass-save" type="button">Save to vault</button>
         </div>
         <p id="pass-err" class="err" role="alert" aria-live="assertive"></p>
         <label for="pass-out">output</label>
@@ -566,6 +573,31 @@
         <label for="count-in">input</label>
         <textarea id="count-in" rows="5" spellcheck="false" placeholder="type or paste…"></textarea>
         <p id="count-out" class="result" aria-live="polite">0 words · 0 characters · 0 lines</p>
+      </article>
+    </section>
+
+    <!-- VAULT -->
+    <section id="vault" class="section">
+      <h2><span class="h-num">04</span> vault <span class="h-sub">local storage</span></h2>
+
+      <article class="panel reveal">
+        <header><h3>vault</h3><p>Keep generated passwords and other text in this browser. Stored <strong>unencrypted</strong> in <code>localStorage</code> — masked from shoulder-surfers, but readable by anyone with access to this device and browser. Convenience, not a password manager.</p></header>
+        <div class="formgrid">
+          <div>
+            <label for="vault-label">label</label>
+            <input id="vault-label" type="text" maxlength="60" autocomplete="off" placeholder="e.g. router admin" />
+          </div>
+          <div>
+            <label for="vault-value">secret</label>
+            <input id="vault-value" type="text" autocomplete="off" spellcheck="false" placeholder="paste or type…" />
+          </div>
+        </div>
+        <div class="row">
+          <button class="btn primary" id="vault-add" type="button">Save to vault</button>
+          <button class="btn" id="vault-clear" type="button">Delete all</button>
+        </div>
+        <p id="vault-err" class="err" role="alert" aria-live="assertive"></p>
+        <ul id="vault-list" class="vault-list" aria-live="polite"></ul>
       </article>
     </section>
   </main>

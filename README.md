@@ -37,6 +37,7 @@ Live: enable **Settings → Pages → Deploy from branch → `main` / root** and
 | 21 | Luhn / IMEI check | checksum validation for IMEIs and coded numbers |
 | 22 | chmod converter | octal ⇄ symbolic permissions |
 | 23 | word counter | live words, characters, lines |
+| 24 | vault | unencrypted localStorage for passwords/secrets: masked, copy, delete |
 
 ## Run locally
 

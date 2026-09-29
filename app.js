@@ -1133,3 +1133,160 @@ function webClipDict(label, url, iconB64 = null) {
     $("count-out").textContent = `${words} word${words === 1 ? "" : "s"} · ${v.length} characters · ${lines} lines`;
   });
 })();
+
+/* ---------- 24 · vault (localStorage, unencrypted by design) ---------- */
+const VAULT_KEY = "ios-tools.vault.v1";
+const VAULT_MAX = 100;
+const MASK = "••••••••";
+
+function loadVault() {
+  try {
+    const raw = localStorage.getItem(VAULT_KEY);
+    if (!raw) return [];
+    const arr = JSON.parse(raw);
+    return Array.isArray(arr)
+      ? arr.filter((it) => it && typeof it.label === "string" && typeof it.value === "string")
+      : [];
+  } catch {
+    return [];
+  }
+}
+
+function storeVault(items) {
+  localStorage.setItem(VAULT_KEY, JSON.stringify(items.slice(0, VAULT_MAX)));
+}
+
+function addVaultItem(label, value) {
+  const items = loadVault();
+  items.unshift({
+    id: `${Date.now().toString(36)}-${Math.floor(Math.random() * 1e6).toString(36)}`,
+    label,
+    value,
+    ts: Date.now(),
+  });
+  storeVault(items);
+  renderVault();
+}
+
+async function copyText(text) {
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {
+    // fall through to the legacy path below
+  }
+  try {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand("copy");
+    ta.remove();
+    return !!ok;
+  } catch {
+    return false;
+  }
+}
+
+function renderVault() {
+  const list = $("vault-list");
+  if (!list) return;
+  list.textContent = "";
+  const items = loadVault();
+  if (!items.length) {
+    const li = document.createElement("li");
+    li.className = "dim small";
+    li.textContent = "vault is empty — saved items appear here.";
+    list.appendChild(li);
+    return;
+  }
+  for (const it of items) {
+    const li = document.createElement("li");
+    li.className = "vault-item";
+    const head = document.createElement("div");
+    head.className = "v-head";
+    const label = document.createElement("span");
+    label.className = "v-label";
+    label.textContent = it.label || "untitled";
+    const time = document.createElement("span");
+    time.className = "v-time";
+    const d = new Date(it.ts);
+    time.textContent = Number.isNaN(d.getTime()) ? "" : d.toLocaleString();
+    head.append(label, time);
+    const val = document.createElement("code");
+    val.className = "v-value";
+    val.textContent = MASK;
+    const actions = document.createElement("div");
+    actions.className = "v-actions";
+    const show = document.createElement("button");
+    show.type = "button";
+    show.className = "btn small";
+    show.textContent = "show";
+    show.addEventListener("click", () => {
+      const hidden = val.textContent === MASK;
+      val.textContent = hidden ? it.value : MASK;
+      show.textContent = hidden ? "hide" : "show";
+    });
+    const copy = document.createElement("button");
+    copy.type = "button";
+    copy.className = "btn small";
+    copy.textContent = "copy";
+    copy.addEventListener("click", async () => {
+      copy.textContent = (await copyText(it.value)) ? "copied ✓" : "copy failed";
+      setTimeout(() => { copy.textContent = "copy"; }, 1200);
+    });
+    const del = document.createElement("button");
+    del.type = "button";
+    del.className = "btn small";
+    del.textContent = "delete";
+    del.addEventListener("click", () => {
+      storeVault(loadVault().filter((x) => x.id !== it.id));
+      renderVault();
+    });
+    actions.append(show, copy, del);
+    li.append(head, val, actions);
+    list.appendChild(li);
+  }
+}
+
+(function vaultUI() {
+  if (!$("vault-add")) return;
+  renderVault();
+  $("vault-add").addEventListener("click", () => {
+    setErr("vault-err", "");
+    try {
+      const label = $("vault-label").value.trim() || "untitled";
+      const value = $("vault-value").value;
+      if (!value) return setErr("vault-err", "nothing to save — enter a secret first.");
+      if (value.length > 4000) return setErr("vault-err", "over 4000 characters — the vault is for secrets, not archives.");
+      addVaultItem(label, value);
+      $("vault-label").value = "";
+      $("vault-value").value = "";
+    } catch {
+      setErr("vault-err", "could not save — browser storage unavailable or full.");
+    }
+  });
+  $("vault-clear").addEventListener("click", () => {
+    try {
+      localStorage.removeItem(VAULT_KEY);
+    } catch {
+      // storage may be blocked; rendering the empty state is still correct
+    }
+    renderVault();
+  });
+  const saver = $("pass-save");
+  if (saver) {
+    saver.addEventListener("click", () => {
+      setErr("pass-err", "");
+      try {
+        const v = $("pass-out").textContent;
+        if (!v || v === "—") return setErr("pass-err", "generate a password first.");
+        addVaultItem(`password · ${new Date().toISOString().slice(0, 16).replace("T", " ")}`, v);
+      } catch {
+        setErr("pass-err", "could not save — browser storage unavailable or full.");
+      }
+    });
+  }
+})();

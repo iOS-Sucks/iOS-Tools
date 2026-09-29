@@ -171,6 +171,15 @@ input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--lime); }
 
 .swatch { width: 100%; height: 44px; border: 1px solid var(--line); margin-top: 12px; }
 
+.btn.small { padding: 6px 10px; font-size: 12px; }
+.vault-list { list-style: none; padding: 0; margin: 12px 0 0; display: flex; flex-direction: column; gap: 8px; }
+.vault-item { border: 1px solid var(--line); background: #0c0c0c; padding: 10px 12px; display: grid; gap: 8px; }
+.v-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.v-label { font-weight: 700; overflow-wrap: anywhere; }
+.v-time { color: var(--dim); font-size: 11px; white-space: nowrap; }
+.v-value { font-size: 13px; overflow-wrap: anywhere; }
+.v-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
 footer { border-top: 1px solid var(--line); padding: 28px 20px 60px; max-width: 960px; margin: 0 auto; font-size: 13px; }
 
 /* animated accent tiles (JS lights a few at random; static grid stays as backdrop) */
