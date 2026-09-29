@@ -4,10 +4,10 @@ Minimal black-and-white utilities for iOS. Static site, no build step, no backen
 
 Live: enable **Settings → Pages → Deploy from branch → `main` / root** and open the Pages URL.
 
-## Guides (no tools, just answers)
+## Guides — `unblocked.html` (separate page, ← back button to index)
 
 - **games you can host yourself** — fork an open-source HTML5 game, enable Pages, done
-- **school-managed device** — how to inspect profiles, ask IT, and work offline; no MDM-removal steps on purpose
+- **school-managed device** — inspect profiles, used-device checks, own-admin removal, offline use; no MDM-removal or filter-evasion steps on purpose
 
 ## Tools (all client-side)
 

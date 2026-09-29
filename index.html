@@ -18,7 +18,7 @@
       <span class="brand-tag">v1.0</span>
     </a>
     <nav aria-label="Sections">
-      <a href="#unblocked">unblocked</a>
+      <a href="unblocked.html">unblocked</a>
       <a href="#profiles">profiles</a>
       <a href="#device">device</a>
       <a href="#dev">dev</a>
@@ -47,6 +47,10 @@
     <section id="tools" class="index">
       <h2><span class="h-num">00</span> index</h2>
       <div class="grid cards">
+        <a class="card reveal" href="unblocked.html">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h9l4 4v12H6zM9 12l2 2 4-4"/></svg>
+          <strong>unblocked</strong><span>self-hostable games + managed-device guides</span><em>guides / →</em>
+        </a>
         <a class="card reveal" href="#mc-view">
           <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
           <strong>mobileconfig viewer</strong><span>paste or drop a profile → readable summary + source</span><em>profiles / 01</em>
@@ -122,41 +126,9 @@
       </div>
     </section>
 
-    <!-- UNBLOCKED -->
-    <section id="unblocked" class="section">
-      <h2><span class="h-num">01</span> unblocked <span class="h-sub">games + managed devices</span></h2>
-
-      <article id="games" class="panel reveal">
-        <header><h3>games you can host yourself</h3><p>Most "unblocked games" mirrors are just open-source HTML5 games on static hosting — host your own copy and skip the ads and trackers.</p></header>
-        <ol class="steps">
-          <li><strong>Fork</strong> one of the repos below (free GitHub account).</li>
-          <li>Repo → <strong>Settings → Pages</strong> → Deploy from branch → default branch, <code>/ (root)</code>.</li>
-          <li>Open <code>https://&lt;you&gt;.github.io/&lt;repo&gt;</code> — that copy is yours.</li>
-        </ol>
-        <ul class="links" aria-label="Open-source games to self-host">
-          <li><a href="https://github.com/gabrielecirulli/2048" target="_blank" rel="noopener">2048 — sliding puzzle (MIT) ↗</a></li>
-          <li><a href="https://github.com/wayou/t-rex-runner" target="_blank" rel="noopener">t-rex runner — offline dino game (BSD-3) ↗</a></li>
-          <li><a href="https://github.com/Hextris/hextris" target="_blank" rel="noopener">hextris — fast hexagon puzzler (check repo license) ↗</a></li>
-        </ul>
-        <p class="dim small">Respect each repo's license. A school network can still block <code>github.io</code> — that's the network owner's call, not something to work around.</p>
-      </article>
-
-      <article id="managed" class="panel reveal">
-        <header><h3>school-managed device (Jamf &amp; co.)</h3><p>Straight answers for a supervised iPad you don't administer.</p></header>
-        <p><strong>See what's installed.</strong> Settings → General → VPN &amp; Device Management lists every profile. A supervised device says so at the top of Settings. Looking is read-only — always safe.</p>
-        <p><strong>What actually works:</strong></p>
-        <ol class="steps">
-          <li><strong>Ask school IT</strong> to allow what you need — name the app/site and the class it's for. Legitimate requests usually get approved.</li>
-          <li><strong>Use a personal device</strong> for anything school policy blocks. Their device, their rules.</li>
-          <li><strong>Go offline:</strong> this whole page runs without a network once loaded — save it (Share → Add to Home Screen, or Ctrl/Cmd+S on desktop) and it keeps working.</li>
-        </ol>
-        <p class="dim small">Deliberately no MDM-removal or filter-evasion steps here: on a school-owned device that's a policy violation and typically ends with a wiped device or suspended account. Only your IT admin can legitimately remove management.</p>
-      </article>
-    </section>
-
     <!-- PROFILES -->
     <section id="profiles" class="section">
-      <h2><span class="h-num">02</span> profiles <span class="h-sub">.mobileconfig</span></h2>
+      <h2><span class="h-num">01</span> profiles <span class="h-sub">.mobileconfig</span></h2>
 
       <article id="mc-view" class="panel reveal">
         <header><h3>mobileconfig viewer</h3><p>Drop a <code>.mobileconfig</code> / <code>.plist</code> file or paste the XML. Parsed locally with <code>DOMParser</code> — nothing is uploaded.</p></header>
@@ -312,7 +284,7 @@
 
     <!-- DEVICE -->
     <section id="device" class="section">
-      <h2><span class="h-num">03</span> device <span class="h-sub">identifiers + firmware</span></h2>
+      <h2><span class="h-num">02</span> device <span class="h-sub">identifiers + firmware</span></h2>
 
       <article id="udid" class="panel reveal">
         <header><h3>UDID / ECID helpers</h3><p>Classic 40-char hex UDIDs, 24/25-char newer IDs, and ECID hex ⇄ decimal via <code>BigInt</code>.</p></header>
@@ -374,7 +346,7 @@
 
     <!-- DEV -->
     <section id="dev" class="section">
-      <h2><span class="h-num">04</span> dev <span class="h-sub">text + time</span></h2>
+      <h2><span class="h-num">03</span> dev <span class="h-sub">text + time</span></h2>
 
       <article id="b64" class="panel reveal">
         <header><h3>base64</h3><p>UTF-8 safe. Decodes strictly — invalid input is reported, not silently mangled.</p></header>

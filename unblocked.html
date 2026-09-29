@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>unblocked — iOS-Tools</title>
+  <meta name="description" content="Self-hostable open-source games and straight answers for school-managed devices." />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%230a0a0a'/%3E%3Crect x='3' y='3' width='10' height='10' fill='none' stroke='%23bfff00' stroke-width='2'/%3E%3C/svg%3E" />
+</head>
+<body>
+  <a class="skip" href="#games">Skip to content</a>
+
+  <header class="topbar">
+    <a class="btn" href="index.html">← back</a>
+    <a class="brand" href="index.html" aria-label="iOS-Tools home">
+      <span class="brand-box" aria-hidden="true"></span>
+      <span>iOS-Tools</span>
+      <span class="brand-tag">unblocked</span>
+    </a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>unblocked.</h1>
+      <p class="lede">Games you can host yourself, and straight answers for school-managed devices.</p>
+    </section>
+
+    <section class="section">
+      <article id="games" class="panel reveal">
+        <header><h3>games you can host yourself</h3><p>Most "unblocked games" mirrors are just open-source HTML5 games on static hosting — host your own copy and skip the ads and trackers.</p></header>
+        <ol class="steps">
+          <li><strong>Fork</strong> one of the repos below (free GitHub account).</li>
+          <li>Repo → <strong>Settings → Pages</strong> → Deploy from branch → default branch, <code>/ (root)</code>.</li>
+          <li>Open <code>https://&lt;you&gt;.github.io/&lt;repo&gt;</code> — that copy is yours.</li>
+        </ol>
+        <ul class="links" aria-label="Open-source games to self-host">
+          <li><a href="https://github.com/gabrielecirulli/2048" target="_blank" rel="noopener">2048 — sliding puzzle (MIT) ↗</a></li>
+          <li><a href="https://github.com/wayou/t-rex-runner" target="_blank" rel="noopener">t-rex runner — offline dino game (BSD-3) ↗</a></li>
+          <li><a href="https://github.com/Hextris/hextris" target="_blank" rel="noopener">hextris — fast hexagon puzzler (check repo license) ↗</a></li>
+        </ul>
+        <p class="dim small">Respect each repo's license. A school network can still block <code>github.io</code> — that's the network owner's call, not something to work around.</p>
+      </article>
+
+      <article id="managed" class="panel reveal">
+        <header><h3>school-managed device (Jamf &amp; co.)</h3><p>What you can actually do with a supervised iPad you don't administer.</p></header>
+        <p><strong>See what's installed.</strong> Settings → General → VPN &amp; Device Management lists every profile. Supervised devices say so at the top of Settings. Looking is read-only — always safe.</p>
+        <p><strong>Buying used? Check before paying.</strong> Setup must never show a "Remote Management" enrollment screen — if it does, the device still belongs to an org and only their admin can release it. Have the seller remove it from their Apple ID / console in front of you, or walk away.</p>
+        <p><strong>Yours to manage?</strong> If you hold the admin credentials, remove profiles in Settings → General → VPN &amp; Device Management or unenroll from the management console. Without credentials there is no legitimate removal path.</p>
+        <p><strong>Day to day:</strong> keep a personal device for anything school policy blocks, and use offline-capable tools — this whole site runs without a network once loaded (Share → Add to Home Screen, or Ctrl/Cmd+S on desktop).</p>
+        <p class="dim small">No Wi-Fi-off tricks, hotspot workarounds, or filter-evasion steps: on school-owned hardware and networks those are policy violations and typically end with a wiped device or suspended account.</p>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    <p><strong>iOS-Tools</strong> — static page, no backend, no cookies.</p>
+    <p><a href="https://github.com/iOS-Sucks/iOS-Tools" target="_blank" rel="noopener">github.com/iOS-Sucks/iOS-Tools ↗</a></p>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
