@@ -8,6 +8,7 @@ Live: enable **Settings → Pages → Deploy from branch → `main` / root** and
 
 - **games you can host yourself** — fork an open-source HTML5 game, enable Pages, done
 - **school-managed device** — inspect profiles, used-device checks, own-admin removal, offline use; no MDM-removal or filter-evasion steps on purpose
+- **school-day setup** — offline prep, personal hotspot basics, battery + Focus; your hardware only
 
 ## Tools (all client-side)
 
