@@ -9,7 +9,17 @@ Live: enable **Settings → Pages → Deploy from branch → `main` / root** and
 - **games you can host yourself** — fork an open-source HTML5 game, enable Pages, done
 - **school-managed device** — inspect profiles, used-device checks, own-admin removal, offline use; no MDM-removal or filter-evasion steps on purpose
 - **school-day setup** — offline prep, personal hotspot basics, battery + Focus; your hardware only
-- **evade school mode** - you can evade school mode by those two methods... wifi off can result in school mode not toggling and giving you no restrictions. for that just turn off the automatic connecting to the network. hotspot method if you are in school mode and wanna access restricted websites (connect to your hotspot and restart your device.)
+
+**Evade School Mode**
+
+There are two methods you can use to bypass School Mode:
+
+1. **Disable Wi-Fi**
+   Turning off Wi-Fi may prevent School Mode from activating, leaving your device without its usual restrictions. To make this work, disable automatic connection before school to the school network so your device doesn't reconnect automatically.
+
+2. **Use a Hotspot**
+   If School Mode is already active and you need to access restricted websites, switch your device to a mobile hotspot and restart the device. After restarting, School Mode may no longer apply the network's restrictions.
+
 
 ## Tools (all client-side)
 
