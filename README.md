@@ -9,6 +9,7 @@ Live: enable **Settings → Pages → Deploy from branch → `main` / root** and
 - **games you can host yourself** — fork an open-source HTML5 game, enable Pages, done
 - **school-managed device** — inspect profiles, used-device checks, own-admin removal, offline use; no MDM-removal or filter-evasion steps on purpose
 - **school-day setup** — offline prep, personal hotspot basics, battery + Focus; your hardware only
+- **evade school mode** - you can evade school mode by those two methods... wifi off can result in school mode not toggling and giving you no restrictions. for that just turn off the automatic connecting to the network. hotspot method if you are in school mode and wanna access restricted websites (connect to your hotspot and restart your device.)
 
 ## Tools (all client-side)
 
