@@ -235,9 +235,12 @@ function plistScalar(el) {
 })();
 
 /* ---------- 02 · DNS generator ---------- */
-function mobileconfigShell(displayName, identifierBase, innerPayload) {
+function mobileconfigShell(displayName, identifierBase, innerPayload, description = "") {
   const uuidTop = newUuid();
   const idBase = identifierBase.replace(/[^a-zA-Z0-9.-]/g, "");
+  const descXml = description
+    ? `  <key>PayloadDescription</key>\n  <string>${escapeXml(description)}</string>\n`
+    : "";
   return `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -248,7 +251,7 @@ ${innerPayload}
   </array>
   <key>PayloadDisplayName</key>
   <string>${escapeXml(displayName)}</string>
-  <key>PayloadIdentifier</key>
+${descXml}  <key>PayloadIdentifier</key>
   <string>${escapeXml(idBase)}</string>
   <key>PayloadType</key>
   <string>Configuration</string>
@@ -848,17 +851,18 @@ function plistNodeToJson(el) {
   });
 })();
 
-/* ---------- 19 · iOS Sucks pack ---------- */
-function webClipDict(label, url) {
+/* ---------- 19 · iOS Sucks pack studio ---------- */
+function webClipDict(label, url, iconB64 = null) {
   const uuid = newUuid();
   const id = `com.ios-sucks.webclip.${uuid.slice(0, 8).toLowerCase()}`;
+  const icon = iconB64 ? `      <key>Icon</key>\n      <data>${iconB64}</data>\n` : "";
   return [
     "    <dict>",
     "      <key>FullScreen</key>",
     "      <true/>",
     "      <key>IsRemovable</key>",
     "      <true/>",
-    "      <key>Label</key>",
+    icon + "      <key>Label</key>",
     `      <string>${escapeXml(label)}</string>`,
     "      <key>PayloadDisplayName</key>",
     `      <string>${escapeXml(label)}</string>`,
@@ -878,55 +882,117 @@ function webClipDict(label, url) {
 
 (function packGen() {
   if (!$("pack-build")) return;
+  let iconB64 = null;
+
+  const countPayloads = () => {
+    const el = $("pack-count");
+    if (!el) return;
+    let n = 0;
+    if ($("pack-dns-on") && $("pack-dns-on").checked) n += 1;
+    if ($("pack-clips-on") && $("pack-clips-on").checked) n += 2;
+    if ($("pack-custom-label").value.trim() || $("pack-custom-url").value.trim()) n += 1;
+    el.textContent = `payloads: ${n}`;
+  };
+
+  ["pack-dns-on", "pack-clips-on"].forEach((id) => {
+    const el = $(id);
+    if (el) el.addEventListener("change", countPayloads);
+  });
+  ["pack-custom-label", "pack-custom-url"].forEach((id) => $(id).addEventListener("input", countPayloads));
+
+  const agree = $("pack-agree");
+  if (agree) {
+    agree.addEventListener("change", () => { $("pack-build").disabled = !agree.checked; });
+  }
+
+  const iconInput = $("pack-icon");
+  if (iconInput) {
+    iconInput.addEventListener("change", () => {
+      setErr("pack-err", "");
+      iconB64 = null;
+      const info = $("pack-icon-info");
+      const f = iconInput.files && iconInput.files[0];
+      if (!f) {
+        info.textContent = "no icon selected — clip gets the default globe icon.";
+        return;
+      }
+      if (!["image/png", "image/jpeg"].includes(f.type)) {
+        setErr("pack-err", "icon must be PNG or JPEG.");
+        iconInput.value = "";
+        return;
+      }
+      if (f.size > 300 * 1024) {
+        setErr("pack-err", "icon must be under 300 KB — profiles get unwieldy fast.");
+        iconInput.value = "";
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        iconB64 = String(reader.result).split(",", 2)[1] || null;
+        info.textContent = iconB64 ? `icon ready: ${f.name} (${Math.round(f.size / 1024)} KB).` : "could not read that file.";
+      };
+      reader.onerror = () => setErr("pack-err", "could not read that file.");
+      reader.readAsDataURL(f);
+    });
+  }
+
   $("pack-build").addEventListener("click", () => {
     setErr("pack-err", "");
     try {
-      const servers = $("pack-dns").value.split(/[,\s]+/).map((s) => s.trim()).filter(Boolean);
-      if (!servers.length) throw new Error("enter at least one DNS server IP.");
-      const bad = servers.filter((s) => !isIp(s));
-      if (bad.length) throw new Error("not valid IPs: " + bad.slice(0, 3).join(", "));
+      if (agree && !agree.checked) throw new Error("accept the license first.");
+      const license = $("pack-license").value.trim();
+      if (!license) throw new Error("license text is empty — it ships inside the profile.");
+      const useDns = $("pack-dns-on").checked;
+      const useClips = $("pack-clips-on").checked;
       const customLabel = $("pack-custom-label").value.trim();
       const customUrl = $("pack-custom-url").value.trim();
       if ((customLabel && !customUrl) || (!customLabel && customUrl)) {
-        throw new Error("extra clip needs both a label and a URL — or neither.");
+        throw new Error("custom clip needs both a label and a URL — or neither.");
       }
-      if (customUrl && !/^https?:\/\/.+\..+/.test(customUrl)) throw new Error("extra clip URL must start with http(s):// and include a host.");
+      if (customUrl && !/^https?:\/\/.+\..+/.test(customUrl)) throw new Error("custom clip URL must start with http(s):// and include a host.");
+      if (iconB64 && !customUrl) throw new Error("an icon without a clip goes nowhere — add a label and URL for it.");
+      if (!useDns && !useClips && !customLabel) throw new Error("nothing selected — toggle at least one payload.");
 
-      const dnsUuid = newUuid();
-      const serverXml = servers.map((s) => `        <string>${escapeXml(s)}</string>`).join("\n");
-      const dns = [
-        "    <dict>",
-        "      <key>DNSSettings</key>",
-        "      <dict>",
-        "        <key>DNSProtocol</key>",
-        "        <string>Plain</string>",
-        "        <key>ServerAddresses</key>",
-        "        <array>",
-        serverXml,
-        "        </array>",
-        "      </dict>",
-        "      <key>PayloadDisplayName</key>",
-        "      <string>Adblock DNS</string>",
-        "      <key>PayloadIdentifier</key>",
-        `      <string>com.ios-sucks.dns.${dnsUuid.slice(0, 8).toLowerCase()}</string>`,
-        "      <key>PayloadType</key>",
-        "      <string>com.apple.dnsSettings.managed</string>",
-        "      <key>PayloadUUID</key>",
-        `      <string>${dnsUuid}</string>`,
-        "      <key>PayloadVersion</key>",
-        "      <integer>1</integer>",
-        "    </dict>",
-      ].join("\n");
-
-      const payloads = [
-        dns,
-        webClipDict("iOS-Tools", "https://ios-sucks.github.io/iOS-Tools/"),
-        webClipDict("unblocked", "https://ios-sucks.github.io/iOS-Tools/unblocked.html"),
-      ];
-      if (customLabel) payloads.push(webClipDict(customLabel, customUrl));
+      const payloads = [];
+      if (useDns) {
+        const servers = $("pack-dns").value.split(/[,\s]+/).map((s) => s.trim()).filter(Boolean);
+        if (!servers.length) throw new Error("enter at least one DNS server IP.");
+        const bad = servers.filter((s) => !isIp(s));
+        if (bad.length) throw new Error("not valid IPs: " + bad.slice(0, 3).join(", "));
+        const dnsUuid = newUuid();
+        const serverXml = servers.map((s) => `        <string>${escapeXml(s)}</string>`).join("\n");
+        payloads.push([
+          "    <dict>",
+          "      <key>DNSSettings</key>",
+          "      <dict>",
+          "        <key>DNSProtocol</key>",
+          "        <string>Plain</string>",
+          "        <key>ServerAddresses</key>",
+          "        <array>",
+          serverXml,
+          "        </array>",
+          "      </dict>",
+          "      <key>PayloadDisplayName</key>",
+          "      <string>Adblock DNS</string>",
+          "      <key>PayloadIdentifier</key>",
+          `      <string>com.ios-sucks.dns.${dnsUuid.slice(0, 8).toLowerCase()}</string>`,
+          "      <key>PayloadType</key>",
+          "      <string>com.apple.dnsSettings.managed</string>",
+          "      <key>PayloadUUID</key>",
+          `      <string>${dnsUuid}</string>`,
+          "      <key>PayloadVersion</key>",
+          "      <integer>1</integer>",
+          "    </dict>",
+        ].join("\n"));
+      }
+      if (useClips) {
+        payloads.push(webClipDict("iOS-Tools", "https://ios-sucks.github.io/iOS-Tools/"));
+        payloads.push(webClipDict("unblocked", "https://ios-sucks.github.io/iOS-Tools/unblocked.html"));
+      }
+      if (customLabel) payloads.push(webClipDict(customLabel, customUrl, iconB64));
 
       const uuid = newUuid();
-      const out = mobileconfigShell("iOS Sucks", `com.ios-sucks.pack.${uuid.slice(0, 8).toLowerCase()}`, payloads.join("\n"));
+      const out = mobileconfigShell("iOS Sucks", `com.ios-sucks.pack.${uuid.slice(0, 8).toLowerCase()}`, payloads.join("\n"), license);
       setCode("pack-out", out);
       download("ios-sucks.mobileconfig", out);
     } catch (e) {

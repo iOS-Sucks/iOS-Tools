@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iOS Sucks pack — studio</title>
+  <meta name="description" content="Build your own iOS Sucks starter profile: adblock DNS, web clips with custom icons, and a license shown at install." />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%230a0a0a'/%3E%3Crect x='3' y='3' width='10' height='10' fill='none' stroke='%23bfff00' stroke-width='2'/%3E%3C/svg%3E" />
+</head>
+<body>
+  <a class="skip" href="#pack">Skip to studio</a>
+
+  <header class="topbar">
+    <a class="btn" href="index.html">← back</a>
+    <a class="brand" href="index.html" aria-label="iOS-Tools home">
+      <span class="brand-box" aria-hidden="true"></span>
+      <span>iOS-Tools</span>
+      <span class="brand-tag">pack studio</span>
+    </a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>iOS Sucks pack.</h1>
+      <p class="lede">One profile: adblocking DNS, home-screen clips with your own icons, and a license iOS shows before install. Only additive payloads — nothing that locks down a device.</p>
+    </section>
+
+    <section class="section">
+      <article id="pack" class="panel reveal">
+        <header><h3>1 · payloads</h3><p>Pick what goes in. Live count below.</p></header>
+        <div class="checkrow">
+          <input id="pack-dns-on" type="checkbox" checked />
+          <label for="pack-dns-on">adblock DNS</label>
+        </div>
+        <label for="pack-dns">DNS servers (comma or space separated)</label>
+        <input id="pack-dns" type="text" value="94.140.14.14, 94.140.15.15" autocomplete="off" spellcheck="false" />
+        <div class="checkrow">
+          <input id="pack-clips-on" type="checkbox" checked />
+          <label for="pack-clips-on">site clips (iOS-Tools + unblocked)</label>
+        </div>
+        <p id="pack-count" class="result" aria-live="polite">payloads: 3</p>
+      </article>
+
+      <article class="panel reveal">
+        <header><h3>2 · your own clip (optional)</h3><p>A home-screen icon to any URL, with a custom icon. PNG or JPEG, square works best, under 300 KB.</p></header>
+        <div class="formgrid">
+          <div>
+            <label for="pack-custom-label">clip label</label>
+            <input id="pack-custom-label" type="text" maxlength="40" autocomplete="off" placeholder="e.g. favorite game" />
+          </div>
+          <div>
+            <label for="pack-custom-url">clip URL</label>
+            <input id="pack-custom-url" type="url" autocomplete="off" spellcheck="false" placeholder="https://…" />
+          </div>
+        </div>
+        <label for="pack-icon">clip icon (optional)</label>
+        <input id="pack-icon" type="file" accept="image/png,image/jpeg" />
+        <p id="pack-icon-info" class="dim small" aria-live="polite">no icon selected — clip gets the default globe icon.</p>
+      </article>
+
+      <article class="panel reveal">
+        <header><h3>3 · license</h3><p>This text is baked into the profile description — iOS shows it on the install screen — and you must accept it here to generate.</p></header>
+        <label for="pack-license">license text (editable)</label>
+        <textarea id="pack-license" rows="9" spellcheck="false">iOS SUCKS PACK LICENSE v1.0
+
+1. Install only on devices you own.
+2. The DNS payload routes ALL your traffic through the listed resolvers. Know what they are.
+3. No warranty. If something breaks, delete the profile in Settings → General → VPN & Device Management.
+4. Never install this on someone else's device. Ever.
+5. Have fun. iOS sucks — your setup shouldn't.</textarea>
+        <div class="checkrow">
+          <input id="pack-agree" type="checkbox" />
+          <label for="pack-agree">I accept this license</label>
+        </div>
+        <div class="row">
+          <button class="btn primary" id="pack-build" type="button" disabled>Generate iOS-Sucks.mobileconfig</button>
+        </div>
+        <p id="pack-err" class="err" role="alert" aria-live="assertive"></p>
+        <label for="pack-out">generated profile</label>
+        <pre class="out"><code id="pack-out">—</code></pre>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    <p><strong>iOS-Tools</strong> — static page, no backend, no cookies.</p>
+    <p><a href="https://github.com/iOS-Sucks/iOS-Tools" target="_blank" rel="noopener">github.com/iOS-Sucks/iOS-Tools ↗</a></p>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
