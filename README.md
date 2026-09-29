@@ -43,6 +43,11 @@ There are two methods you can use to bypass School Mode:
 | 16 | hasher | SHA-256/384/512 via WebCrypto |
 | 17 | color converter | HEX ⇄ RGB ⇄ HSL with preview |
 | 18 | plist → JSON | dict/array plist → JSON (dates→ISO, data→base64) |
+| 19 | iOS Sucks pack | adblock DNS + web clips in one `.mobileconfig`, optional extra clip |
+| 20 | password generator | `crypto.getRandomValues`, length + charset, class coverage |
+| 21 | Luhn / IMEI check | checksum validation for IMEIs and coded numbers |
+| 22 | chmod converter | octal ⇄ symbolic permissions |
+| 23 | word counter | live words, characters, lines |
 
 ## Run locally
 

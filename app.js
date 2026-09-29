@@ -847,3 +847,176 @@ function plistNodeToJson(el) {
     }
   });
 })();
+
+/* ---------- 19 · iOS Sucks pack ---------- */
+function webClipDict(label, url) {
+  const uuid = newUuid();
+  const id = `com.ios-sucks.webclip.${uuid.slice(0, 8).toLowerCase()}`;
+  return [
+    "    <dict>",
+    "      <key>FullScreen</key>",
+    "      <true/>",
+    "      <key>IsRemovable</key>",
+    "      <true/>",
+    "      <key>Label</key>",
+    `      <string>${escapeXml(label)}</string>`,
+    "      <key>PayloadDisplayName</key>",
+    `      <string>${escapeXml(label)}</string>`,
+    "      <key>PayloadIdentifier</key>",
+    `      <string>${id}</string>`,
+    "      <key>PayloadType</key>",
+    "      <string>com.apple.webClip.managed</string>",
+    "      <key>PayloadUUID</key>",
+    `      <string>${uuid}</string>`,
+    "      <key>PayloadVersion</key>",
+    "      <integer>1</integer>",
+    "      <key>URL</key>",
+    `      <string>${escapeXml(url)}</string>`,
+    "    </dict>",
+  ].join("\n");
+}
+
+(function packGen() {
+  if (!$("pack-build")) return;
+  $("pack-build").addEventListener("click", () => {
+    setErr("pack-err", "");
+    try {
+      const servers = $("pack-dns").value.split(/[,\s]+/).map((s) => s.trim()).filter(Boolean);
+      if (!servers.length) throw new Error("enter at least one DNS server IP.");
+      const bad = servers.filter((s) => !isIp(s));
+      if (bad.length) throw new Error("not valid IPs: " + bad.slice(0, 3).join(", "));
+      const customLabel = $("pack-custom-label").value.trim();
+      const customUrl = $("pack-custom-url").value.trim();
+      if ((customLabel && !customUrl) || (!customLabel && customUrl)) {
+        throw new Error("extra clip needs both a label and a URL — or neither.");
+      }
+      if (customUrl && !/^https?:\/\/.+\..+/.test(customUrl)) throw new Error("extra clip URL must start with http(s):// and include a host.");
+
+      const dnsUuid = newUuid();
+      const serverXml = servers.map((s) => `        <string>${escapeXml(s)}</string>`).join("\n");
+      const dns = [
+        "    <dict>",
+        "      <key>DNSSettings</key>",
+        "      <dict>",
+        "        <key>DNSProtocol</key>",
+        "        <string>Plain</string>",
+        "        <key>ServerAddresses</key>",
+        "        <array>",
+        serverXml,
+        "        </array>",
+        "      </dict>",
+        "      <key>PayloadDisplayName</key>",
+        "      <string>Adblock DNS</string>",
+        "      <key>PayloadIdentifier</key>",
+        `      <string>com.ios-sucks.dns.${dnsUuid.slice(0, 8).toLowerCase()}</string>`,
+        "      <key>PayloadType</key>",
+        "      <string>com.apple.dnsSettings.managed</string>",
+        "      <key>PayloadUUID</key>",
+        `      <string>${dnsUuid}</string>`,
+        "      <key>PayloadVersion</key>",
+        "      <integer>1</integer>",
+        "    </dict>",
+      ].join("\n");
+
+      const payloads = [
+        dns,
+        webClipDict("iOS-Tools", "https://ios-sucks.github.io/iOS-Tools/"),
+        webClipDict("unblocked", "https://ios-sucks.github.io/iOS-Tools/unblocked.html"),
+      ];
+      if (customLabel) payloads.push(webClipDict(customLabel, customUrl));
+
+      const uuid = newUuid();
+      const out = mobileconfigShell("iOS Sucks", `com.ios-sucks.pack.${uuid.slice(0, 8).toLowerCase()}`, payloads.join("\n"));
+      setCode("pack-out", out);
+      download("ios-sucks.mobileconfig", out);
+    } catch (e) {
+      setErr("pack-err", e.message);
+    }
+  });
+})();
+
+/* ---------- 20 · password generator ---------- */
+(function passGen() {
+  if (!$("pass-build")) return;
+  const LOWER = "abcdefghjkmnpqrstuvwxyz";
+  const UPPER = "ABCDEFGHJKMNPQRSTUVWXYZ";
+  const DIGITS = "23456789";
+  const SYMBOLS = "!@#$%^&*()-_=+[]{};:,.<>?";
+  $("pass-build").addEventListener("click", () => {
+    setErr("pass-err", "");
+    try {
+      const raw = $("pass-len").value.trim();
+      if (!/^\d+$/.test(raw)) throw new Error("length must be a whole number.");
+      const len = Number(raw);
+      if (len < 4 || len > 128) throw new Error("length must be 4–128.");
+      const sets = [LOWER, UPPER, DIGITS];
+      if ($("pass-symbols").checked) sets.push(SYMBOLS);
+      if (len < sets.length) throw new Error(`length ${len} can't cover ${sets.length} character classes.`);
+      const pool = sets.join("");
+      const rand = crypto.getRandomValues(new Uint32Array(len));
+      const chars = sets.map((s, i) => s[rand[i] % s.length]);
+      for (let i = chars.length; i < len; i++) chars.push(pool[rand[i] % pool.length]);
+      for (let i = chars.length - 1; i > 0; i--) {
+        const j = rand[i] % (i + 1);
+        [chars[i], chars[j]] = [chars[j], chars[i]];
+      }
+      setCode("pass-out", chars.join(""));
+    } catch (e) {
+      setErr("pass-err", e.message);
+    }
+  });
+})();
+
+/* ---------- 21 · Luhn / IMEI ---------- */
+(function luhn() {
+  if (!$("luhn-check")) return;
+  $("luhn-check").addEventListener("click", () => {
+    const v = $("luhn-in").value.replace(/[\s-]/g, "");
+    const out = $("luhn-out");
+    if (!/^\d{8,19}$/.test(v)) {
+      out.textContent = "✗ expected 8–19 digits (IMEIs are 15).";
+      return;
+    }
+    let sum = 0, dbl = false;
+    for (let i = v.length - 1; i >= 0; i--) {
+      let d = v.charCodeAt(i) - 48;
+      if (dbl) { d *= 2; if (d > 9) d -= 9; }
+      sum += d;
+      dbl = !dbl;
+    }
+    if (sum % 10 !== 0) {
+      out.textContent = "✗ bad checksum — mistyped digit.";
+      return;
+    }
+    out.textContent = v.length === 15 ? "✓ valid checksum, IMEI-shaped (15 digits)." : "✓ valid Luhn checksum.";
+  });
+})();
+
+/* ---------- 22 · chmod converter ---------- */
+(function chmodTool() {
+  if (!$("chmod-to-sym")) return;
+  const BITS = ["---", "--x", "-w-", "-wx", "r--", "r-x", "rw-", "rwx"];
+  $("chmod-to-sym").addEventListener("click", () => {
+    setErr("chmod-err", "");
+    const v = $("chmod-oct").value.trim();
+    if (!/^[0-7]{3}$/.test(v)) return setErr("chmod-err", "octal must be exactly 3 digits 0–7 (e.g. 755).");
+    $("chmod-sym").value = [...v].map((d) => BITS[Number(d)]).join("");
+  });
+  $("chmod-to-oct").addEventListener("click", () => {
+    setErr("chmod-err", "");
+    const v = $("chmod-sym").value.trim();
+    if (!/^[rwx-]{9}$/.test(v)) return setErr("chmod-err", "symbolic must be 9 chars of r, w, x, - (e.g. rwxr-xr-x).");
+    $("chmod-oct").value = [0, 3, 6].map((i) => BITS.indexOf(v.slice(i, i + 3))).join("");
+  });
+})();
+
+/* ---------- 23 · word counter ---------- */
+(function counter() {
+  if (!$("count-in")) return;
+  $("count-in").addEventListener("input", () => {
+    const v = $("count-in").value;
+    const words = v.trim() ? v.trim().split(/\s+/).length : 0;
+    const lines = v ? v.split("\n").length : 0;
+    $("count-out").textContent = `${words} word${words === 1 ? "" : "s"} · ${v.length} characters · ${lines} lines`;
+  });
+})();

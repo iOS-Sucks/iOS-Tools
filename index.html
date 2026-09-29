@@ -36,7 +36,7 @@
         <a class="btn" href="#tools">Browse all tools</a>
       </div>
       <dl class="stats">
-        <div><dt>tools</dt><dd>18</dd></div>
+        <div><dt>tools</dt><dd>23</dd></div>
         <div><dt>network calls</dt><dd>00</dd></div>
         <div><dt>tracking</dt><dd>00</dd></div>
         <div><dt>build step</dt><dd>00</dd></div>
@@ -122,6 +122,26 @@
         <a class="card reveal" href="#p2j">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v16H7zM10 8h4M10 12h4M10 16h2"/></svg>
           <strong>plist → JSON</strong><span>Apple plist → portable JSON object</span><em>dev / 18</em>
+        </a>
+        <a class="card reveal" href="#pack">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+          <strong>iOS Sucks pack</strong><span>adblock DNS + web clips in one profile</span><em>profiles / 19</em>
+        </a>
+        <a class="card reveal" href="#passgen">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 11h14v9H5zM8 11V8a4 4 0 018 0v3M12 15v2"/></svg>
+          <strong>password generator</strong><span>crypto-random, your length and charset</span><em>dev / 20</em>
+        </a>
+        <a class="card reveal" href="#luhn">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13"/><path d="M3 10h18M7 15h4"/></svg>
+          <strong>Luhn / IMEI check</strong><span>validate IMEIs, serials, card numbers</span><em>device / 21</em>
+        </a>
+        <a class="card reveal" href="#chmod">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6l8 6 8-6M4 12l8 6 8-6M4 18l8 6 8-6"/></svg>
+          <strong>chmod converter</strong><span>octal ⇄ rwxr-xr-x notation</span><em>dev / 22</em>
+        </a>
+        <a class="card reveal" href="#count">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 10h16M4 14h10M4 18h7"/></svg>
+          <strong>word counter</strong><span>live words, characters, lines</span><em>dev / 23</em>
         </a>
       </div>
     </section>
@@ -280,6 +300,29 @@
         <label for="pw-out">generated profile</label>
         <pre class="out"><code id="pw-out">—</code></pre>
       </article>
+
+      <article id="pack" class="panel reveal">
+        <header><h3>iOS Sucks pack</h3><p>Our starter profile in one tap: adblocking DNS plus home-screen clips to this site and the games page. DNS servers editable — defaults are AdGuard's public resolvers.</p></header>
+        <label for="pack-dns">DNS servers (comma or space separated)</label>
+        <input id="pack-dns" type="text" value="94.140.14.14, 94.140.15.15" autocomplete="off" spellcheck="false" />
+        <div class="formgrid">
+          <div>
+            <label for="pack-custom-label">extra clip label (optional)</label>
+            <input id="pack-custom-label" type="text" maxlength="40" autocomplete="off" placeholder="e.g. favorite game" />
+          </div>
+          <div>
+            <label for="pack-custom-url">extra clip URL (optional)</label>
+            <input id="pack-custom-url" type="url" autocomplete="off" spellcheck="false" placeholder="https://…" />
+          </div>
+        </div>
+        <p class="dim small">Installs adblock DNS for all your traffic — only install on devices you own.</p>
+        <div class="row">
+          <button class="btn primary" id="pack-build" type="button">Generate iOS-Sucks.mobileconfig</button>
+        </div>
+        <p id="pack-err" class="err" role="alert" aria-live="assertive"></p>
+        <label for="pack-out">generated profile</label>
+        <pre class="out"><code id="pack-out">—</code></pre>
+      </article>
     </section>
 
     <!-- DEVICE -->
@@ -341,6 +384,16 @@
         </div>
         <p id="store-err" class="err" role="alert" aria-live="assertive"></p>
         <ul id="store-out" class="links" aria-live="polite"></ul>
+      </article>
+
+      <article id="luhn" class="panel reveal">
+        <header><h3>Luhn / IMEI check</h3><p>Validates the checksum in IMEIs (dial <code>*#06#</code> to see yours), payment cards, and other Luhn-coded numbers. Checksum only — it can't tell you if a number is registered or blocked.</p></header>
+        <label for="luhn-in">number (spaces and hyphens ignored)</label>
+        <input id="luhn-in" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="490154203237518" />
+        <div class="row">
+          <button class="btn primary" id="luhn-check" type="button">Validate</button>
+        </div>
+        <p id="luhn-out" class="result" aria-live="polite">—</p>
       </article>
     </section>
 
@@ -483,6 +536,52 @@
         <label for="color-out">output</label>
         <pre class="out"><code id="color-out">—</code></pre>
         <div id="color-swatch" class="swatch" role="img" aria-label="Color preview"></div>
+      </article>
+
+      <article id="passgen" class="panel reveal">
+        <header><h3>password generator</h3><p>Drawn from <code>crypto.getRandomValues</code> — never <code>Math.random</code>.</p></header>
+        <div class="formgrid">
+          <div>
+            <label for="pass-len">length (4–128)</label>
+            <input id="pass-len" type="text" inputmode="numeric" autocomplete="off" value="20" />
+          </div>
+          <div class="checkrow">
+            <input id="pass-symbols" type="checkbox" checked />
+            <label for="pass-symbols">include symbols</label>
+          </div>
+        </div>
+        <div class="row">
+          <button class="btn primary" id="pass-build" type="button">Generate</button>
+        </div>
+        <p id="pass-err" class="err" role="alert" aria-live="assertive"></p>
+        <label for="pass-out">output</label>
+        <pre class="out"><code id="pass-out">—</code></pre>
+      </article>
+
+      <article id="chmod" class="panel reveal">
+        <header><h3>chmod converter</h3><p>Unix permission bits both ways. Sticky/setuid bits (<code>1xxx</code>/<code>2xxx</code>/<code>4xxx</code>) not covered — plain <code>rwx</code> only.</p></header>
+        <div class="formgrid">
+          <div>
+            <label for="chmod-oct">octal (e.g. 755)</label>
+            <input id="chmod-oct" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="755" />
+          </div>
+          <div>
+            <label for="chmod-sym">symbolic (e.g. rwxr-xr-x)</label>
+            <input id="chmod-sym" type="text" autocomplete="off" spellcheck="false" placeholder="rwxr-xr-x" />
+          </div>
+        </div>
+        <div class="row">
+          <button class="btn" id="chmod-to-sym" type="button">oct → sym</button>
+          <button class="btn" id="chmod-to-oct" type="button">sym → oct</button>
+        </div>
+        <p id="chmod-err" class="err" role="alert" aria-live="assertive"></p>
+      </article>
+
+      <article id="count" class="panel reveal">
+        <header><h3>word counter</h3><p>Counts as you type — nothing leaves the page.</p></header>
+        <label for="count-in">input</label>
+        <textarea id="count-in" rows="5" spellcheck="false" placeholder="type or paste…"></textarea>
+        <p id="count-out" class="result" aria-live="polite">0 words · 0 characters · 0 lines</p>
       </article>
     </section>
   </main>
