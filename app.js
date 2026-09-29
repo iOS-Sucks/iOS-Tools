@@ -98,8 +98,8 @@ function parseXmlStrict(text) {
 /* ---------- ambient tiles: a few grid cells glow lime at random ---------- */
 (function tiles() {
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const SIZE = 96;
-  const MAX_CELLS = 400;
+  const SIZE = 32;
+  const MAX_CELLS = 2500;
   const MAX_LIT = 6;
   const layer = document.createElement("div");
   layer.className = "tiles";
